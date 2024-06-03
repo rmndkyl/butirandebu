@@ -3,6 +3,8 @@ import urllib.parse
 import json
 import time
 import subprocess
+import os
+
 # URL dan headers
 url = "https://api.service.gameeapp.com/"
 headers = {
@@ -20,7 +22,6 @@ def read_initdata_from_file(filename):
         for line in file:
             initdata_list.append(line.strip())
     return initdata_list
-
 
 def get_nama_from_init_data(init_data):
     parsed_data = urllib.parse.parse_qs(init_data)
@@ -40,12 +41,11 @@ def get_nama_from_init_data(init_data):
 
 # Fungsi untuk melakukan start session
 def start_session():
-    response = requests.post('https://seeddao.org/api/v1/seed/claim',{}, headers=headers)
+    response = requests.post('https://elb.seeddao.org/api/v1/seed/claim', {}, headers=headers)
     return response
 
-
 def claim_harian():
-    response = requests.post('https://seeddao.org/api/v1/login-bonuses',{},headers=headers)
+    response = requests.post('https://elb.seeddao.org/api/v1/login-bonuses', {}, headers=headers)
     return response
 
 # Fungsi untuk menjalankan operasi untuk setiap initData
@@ -54,21 +54,26 @@ def process_initdata(init_data):
     nama = get_nama_from_init_data(init_data)
     print(nama)
     headers['telegram-data'] = init_data
-    start_response = start_session()
-    daily_response = claim_harian()
-    if start_response.status_code == 200:
-        start_data = start_response.json()
-        print("Claim Hasil Mining Selesai")
-    else :
-        print('Belum Waktunya Claim')
-
-    if daily_response.status_code == 200:
-        daily_data = daily_response.json
-        print("Berhasil Ambil Seed Daily")
-    else :
-        print('Sudah Ambil Daily')
     
-                
+    try:
+        start_response = start_session()
+        if start_response.status_code == 200:
+            start_data = start_response.json()
+            print("Claim Hasil Mining Selesai")
+        else:
+            print('Belum Waktunya Claim')
+    except requests.exceptions.JSONDecodeError:
+        print("Failed to decode JSON response for start session")
+
+    try:
+        daily_response = claim_harian()
+        if daily_response.status_code == 200:
+            daily_data = daily_response.json()
+            print("Berhasil Ambil Seed Daily")
+        else:
+            print('Sudah Ambil Daily')
+    except requests.exceptions.JSONDecodeError:
+        print("Failed to decode JSON response for daily claim")
 
 # Main program
 def main():
@@ -82,11 +87,13 @@ def main():
             print("\n")
         
         # Delay sebelum membaca ulang file initData
-        time.sleep(5400)  # Delay 60 detik sebelum membaca kembali file initData
+        time.sleep(300)  # Delay 300 detik atau 5 menit sebelum membaca kembali file initData
 
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
         print(f"An error occurred: {e}")
-        subprocess.run(["python3.10", "gamee.py"])
+        # Mendapatkan versi python yang digunakan
+        python_executable = os.path.basename(os.sys.executable)
+        subprocess.run([python_executable, "gamee.py"])
