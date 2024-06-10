@@ -60,12 +60,12 @@ def claim_task():
                 claim_response = requests.post(claim_url, {}, headers=headers)
                 if claim_response.status_code == 200:
                     claimed_tasks.append(task)
-                    print(Fore.GREEN + f"Tugas {task.get('name')} dengan ID {task_id} telah berhasil di-klaim")
+                    print(Fore.GREEN + f"Tugas {task.get('name')} telah berhasil di-klaim")
                 elif claim_response.status_code == 429:
                     print(Fore.RED + f"Rate limiting: Tunggu beberapa saat sebelum mencoba lagi.")
                     time.sleep(5)  # Tunggu 5 detik sebelum mencoba lagi
                 else:
-                    print(Fore.RED + f"Gagal meng-klaim tugas {task.get('name')} dengan ID {task_id}: {claim_response.status_code}, {claim_response.text}")
+                    print(Fore.RED + f"Gagal meng-klaim tugas {task.get('name')}: {claim_response.status_code}, {claim_response.text}")
         return claimed_tasks
     else:
         print(Fore.RED + f"Gagal mengambil data tugas: {response.status_code}, {response.text}")
