@@ -116,7 +116,7 @@ def process_initdata(init_data):
                 # Contoh penggunaan data dari tugas yang telah diklaim
                 task_id = task.get('id')
                 task_name = task.get('name')
-                print(Fore.GREEN + f"Tugas {task_name} dengan ID {task_id} telah selesai")
+                print(Fore.GREEN + f"Tugas {task_name} telah selesai")
     except requests.exceptions.JSONDecodeError:
         print(Fore.RED + "Gagal mendecode respons JSON untuk klaim tugas")
 
