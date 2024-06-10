@@ -48,6 +48,10 @@ def claim_harian():
     response = requests.post('https://elb.seeddao.org/api/v1/login-bonuses', {}, headers=headers)
     return response
 
+def upgrade_speed():
+    response = requests.post('https://elb.seeddao.org/api/v1/seed/mining-speed/upgrade', {}, headers=headers)
+    return response
+
 # Fungsi untuk menjalankan operasi untuk setiap initData
 def process_initdata(init_data):
     # Login
@@ -72,6 +76,16 @@ def process_initdata(init_data):
             print("Berhasil Ambil Seed Daily")
         else:
             print('Sudah Ambil Daily')
+    except requests.exceptions.JSONDecodeError:
+        print("Failed to decode JSON response for daily claim")
+
+     try:
+        upgrade_response = upgrade_speed()
+        if upgrade_response.status_code == 200:
+            upgrade_data = upgrade_response.json()
+            print("Upgrade Mining Speed telah selesai")
+        else:
+            print('Belum Waktunya Upgrade')
     except requests.exceptions.JSONDecodeError:
         print("Failed to decode JSON response for daily claim")
 
