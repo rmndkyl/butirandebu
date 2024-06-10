@@ -141,7 +141,7 @@ def main():
             print("\n")
         
         # Delay sebelum membaca ulang file initData
-        time.sleep(1)
+        time.sleep(300) #Delay selama 300 detik atau 5 Menit sebelum kembali membaca initdata
 
 if __name__ == "__main__":
     try:
