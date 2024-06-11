@@ -162,4 +162,4 @@ if __name__ == "__main__":
         print(Fore.RED + f"Terjadi kesalahan: {e}")
         # Dapatkan versi Python yang digunakan
         python_executable = os.path.basename(os.sys.executable)
-        subprocess.run([python_executable, "gamee.py"])
+        subprocess.run([python_executable, "seed.py"])
