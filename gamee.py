@@ -42,6 +42,9 @@ def start_session():
 
 def claim_harian():
     return requests.post('https://elb.seeddao.org/api/v1/login-bonuses', {}, headers=headers)
+    
+def claim_pohon():
+    return requests.post('https://elb.seeddao.org/api/v1/happy-days', {}, headers=headers)
 
 def upgrade_speed():
     return requests.post('https://elb.seeddao.org/api/v1/seed/mining-speed/upgrade', {}, headers=headers)
@@ -95,6 +98,15 @@ def process_initdata(init_data):
             print(Fore.BLUE + "Berhasil Ambil Seed Harian")
         else:
             print(Fore.RED + 'Sudah Ambil Harian')
+    except requests.exceptions.JSONDecodeError:
+        print(Fore.RED + "Gagal mendecode respons JSON untuk klaim harian")
+        
+    try:
+        tree_response = claim_pohon()
+        if tree_response.status_code == 200:
+            print(Fore.BLUE + "Berhasil Ambil Seed dari Pohon")
+        else:
+            print(Fore.RED + 'Tidak ada Seed dari Pohon(tunggu besok)')
     except requests.exceptions.JSONDecodeError:
         print(Fore.RED + "Gagal mendecode respons JSON untuk klaim harian")
 
