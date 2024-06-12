@@ -37,5 +37,5 @@ isi data dengan contoh seperti ini
 ## Usage
 Untuk menjalankan bot ketik:
   ```bash
-    python3.10 gamee.py
+    python3.10 seed.py
   ```
