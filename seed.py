@@ -49,31 +49,6 @@ def claim_pohon():
 def upgrade_speed():
     return requests.post('https://elb.seeddao.org/api/v1/seed/mining-speed/upgrade', {}, headers=headers)
 
-# Fungsi untuk mengambil data ID task dan klaim task
-def claim_task():
-    task_progress_url = 'https://elb.seeddao.org/api/v1/tasks/progresses'
-    response = requests.get(task_progress_url, headers=headers)
-    if response.status_code == 200:
-        tasks = response.json().get('data', [])
-        claimed_tasks = []
-        for task in tasks:
-            task_id = task.get('id')
-            if task_id:
-                claim_url = f'https://elb.seeddao.org/api/v1/tasks/{task_id}'
-                claim_response = requests.post(claim_url, {}, headers=headers)
-                if claim_response.status_code == 200:
-                    claimed_tasks.append(task)
-                    print(Fore.GREEN + f"Tugas {task.get('name')} telah berhasil di-klaim")
-                elif claim_response.status_code == 429:
-                    print(Fore.RED + f"Rate limiting: Tunggu beberapa saat sebelum mencoba lagi.")
-                    time.sleep(5)  # Tunggu 5 detik sebelum mencoba lagi
-                else:
-                    print(Fore.RED + f"Gagal meng-klaim tugas {task.get('name')}: {claim_response.status_code}, {claim_response.text}")
-        return claimed_tasks
-    else:
-        print(Fore.RED + f"Gagal mengambil data tugas: {response.status_code}, {response.text}")
-        return []
-
 def claim_box():
     return requests.post('https://elb.seeddao.org/api/v1/beta-gratitude-mystery-box/my-box', {}, headers=headers)
 
@@ -118,19 +93,6 @@ def process_initdata(init_data):
             print(Fore.RED + 'Belum Waktunya Upgrade')
     except requests.exceptions.JSONDecodeError:
         print(Fore.RED + "Gagal mendecode respons JSON untuk upgrade")
-
-    try:
-        claimed_tasks = claim_task()
-        if not claimed_tasks:
-            print(Fore.BLUE + "Semua Tugas telah selesai")
-        else:
-            for task in claimed_tasks:
-                # Contoh penggunaan data dari tugas yang telah diklaim
-                task_id = task.get('id')
-                task_name = task.get('name')
-                print(Fore.GREEN + f"Tugas {task_name} telah selesai")
-    except requests.exceptions.JSONDecodeError:
-        print(Fore.RED + "Gagal mendecode respons JSON untuk klaim tugas")
 
     try:
         claim_box_response = claim_box()
